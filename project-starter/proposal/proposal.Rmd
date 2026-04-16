@@ -1,6 +1,6 @@
 ---
 title: "Project proposal"
-author: "Team name"
+author: "Samarth Sulakhe"
 output: html_document
 ---
 
@@ -9,8 +9,149 @@ library(tidyverse)
 library(broom)
 ```
 
+```{r}
+GlobalTemperatures <- read.csv(file.choose())
+GlobalLandTemperaturesByCountry <- read.csv(file.choose())
+```
+
 ## 1. Data
 
+## Dimensions
+
+```{r}
+dim(GlobalTemperatures)
+dim(GlobalLandTemperaturesByCountry)
+```
+
+## Glimpse
+
+```{r}
+library(dplyr)
+
+glimpse(GlobalTemperatures)
+glimpse(GlobalLandTemperaturesByCountry)
+```
 ## 2. Exploratory Visualization
 
+1. Temperature Trend Over Time
+```{r}
+library(dplyr)
+library(ggplot2)
+
+GlobalTemperatures$Year <- as.numeric(format(as.Date(GlobalTemperatures$dt), "%Y"))
+
+avg_temp_year <- GlobalTemperatures %>%
+  group_by(Year) %>%
+  summarize(mean_temp = mean(LandAverageTemperature, na.rm = TRUE)) %>%
+  filter(Year >= 1850)
+
+ggplot(avg_temp_year, aes(x = Year, y = mean_temp)) +
+  geom_line() +
+  labs(title = "Average Global Land Temperature Over Time",
+       x = "Year",
+       y = "Temperature (°C)")
+```
+- The plot shows the avg. global land temperatures over time. There is an upward trend in temp, suggesting an increase in global land temperatures.
+
+2. Temperature Trends across Major Countries
+```{r}
+GlobalLandTemperaturesByCountry$Year <- as.numeric(format(as.Date(GlobalLandTemperaturesByCountry$dt), "%Y"))
+
+subset_data <- GlobalLandTemperaturesByCountry %>%
+  filter(Country %in% c("United States", "India", "China"))
+
+plot_data <- subset_data %>%
+  group_by(Year, Country) %>%
+  summarize(mean_temp = mean(AverageTemperature, na.rm = TRUE)) %>%
+  filter(Year >= 1850)
+
+ggplot(plot_data, aes(x = Year, y = mean_temp, color = Country)) +
+  geom_line() +
+  labs(title = "Temperature Trends by Country",
+       x = "Year",
+       y = "Temperature (°C)")
+```
+This chart compares temperature trends across three major countries that have had outstanding effects on the U.S., India, and China. Though, there are temperature level differences, all three show an upward trend through time, this can be intrepeted as an indication of global temperature increase.
+
+
 ## 3. Possible question and method
+
+# Section 1
+
+The purpose of this project is to analyze long-term trends in global temperatures and see how temperature patterns have changed over time through different countries. Understanding these trends is important for evaluating evidence of climate change and seeing whether temperature increases are consistent globally or differ by region.
+
+The data used in this project comes from  global temperature records; the datasets GlobalTemperatures and GlobalLandTemperaturesByCountry are given the main focus. The data includes temperature measurements collected from weather stations and grouped to provide temperature averages. In this dataset, each case represents a recorded observation of temperature for a specific date and location either globally or by country.
+
+Key variables include:
+
+Date: the time at which the temperature was recorded
+AverageTemperature: the recorded average temperature (in degrees Celsius)
+AverageTemperatureUncertainty: the uncertainty associated with the measurement
+Country: the location of the observation
+
+The variable of interest is AverageTemperature; a quantitative variable used to measure changes in temperature over time. The `Date` variable allows us to analyze temporal trends while the `Country` variable enables comparisons across different regions.
+
+The research question guiding this project is:
+
+How have average land temperatures changed over time globally and across different countries?
+
+To address this question, the project will examine temperature trends over time, compare patterns between countries, and overall evaluate whether there is evidence of a consistent upward trend in global temperatures. This analysis will provide a look into the extent and variability of climate change using real-world data.
+
+# Section 3
+Outcome (Response, Y) and Predictor (Explanatory, X)
+
+The primary outcome variable (Y) in this analysis will be:
+
+`AverageTemperature` (attained from the country-level dataset)
+This is a quantitative variable representing the average land temperature in degrees Celsius.
+
+The main predictor variable (X) will be:
+
+`Year` (derived from dt)
+The date variable will be converted into a numeric year to analyze trends over time.
+
+Additionally, for an extended analysis:
+
+`Country` will be used as a categorical variable to compare temperature trends across different regions.
+
+To better understand differences in temperature trends, the following comparison groups will be used:
+
+`Countries`
+Potential grouping by:
+-Early years vs. recent years (before 1950 vs. after 2000)
+-Different regions or continents
+These comparisons will help determine whether temperature changes are consistent globally or vary by location.
+
+Initial exploration of the data will include summary statistics and visualizations:
+
+Summary Statistics
+-Mean, median, and standard deviation of `AverageTemperature`
+-Minimum and maximum temperature values
+-Distribution of temperature observations
+Visualizations
+-Histogram of AverageTemperature
+-Time series plot (Temperature vs. Year)
+-Line plots by country
+
+These exploratory steps help identify patterns, variability, and potential relationships in the data before applying formal statistical methods.
+
+The following methods will be used to analyze the data:
+
+Time Series Trend Analysis
+-To observe long-term changes in temperature over time
+Linear Regression (Temperature ~ Year)
+-To quantify the relationship between time and temperature
+Sampling and Confidence Intervals
+-To estimate the average temperature and assess variability
+Analysis Across Countries
+-Compare mean temperatures and trends between different countries
+
+Expected Results and Interpretation
+
+To support the hypothesis that global temperatures are increasing over time, the following results are expected:
+-A positive slope in the regression of temperature on year
+-An upward trend in time series visualizations
+-Confidence intervals
+-Differences across countries
+
+If these results are observed, they would provide statistical evidence supporting long-term global warming trends.
