@@ -9,9 +9,15 @@ library(tidyverse)
 library(broom)
 ```
 
+> GM: excellent work - please see my comment about use of 30-y averages and 95% CI evaluation below.
+
+> Description 8/8
+> Content 9/10
+> Quality: 2/2
+
 ```{r}
-GlobalTemperatures <- read.csv(file.choose())
-GlobalLandTemperaturesByCountry <- read.csv(file.choose())
+GlobalTemperatures <- read_csv("../data/GlobalTemperatures.csv")
+GlobalLandTemperaturesByCountry <- read_csv("../data/GlobalLandTemperaturesByCountry.csv")
 ```
 
 ## 1. Data
@@ -155,3 +161,5 @@ To support the hypothesis that global temperatures are increasing over time, the
 -Differences across countries
 
 If these results are observed, they would provide statistical evidence supporting long-term global warming trends.
+
+> GM: Nice job! You should also consider the p-value of the positive linear slope to see if it is a significant trend (gloablly and for each country). I also encourage you to look at the time series in 30-year average (climate normal) time-steps. Then you can see when temperature increases change from one 30-y block to the next, and which changes are significant statitsicslly. This last part you could use bootstrapping to compute a 30-y population mean 95% CI and look at which steps are significant.
