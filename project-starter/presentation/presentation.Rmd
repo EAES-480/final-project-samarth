@@ -1,9 +1,9 @@
 ---
-title: "Presentation title"
-subtitle: "Presentation subtitle (if any)"
-author: "Team name <br> Names of team members"
+title: "Global Temperature Change"
+subtitle: "A Swift Rise"
+author: "Samarth Sulakhe"
 institute: "University of Illinois at Chicago"
-date: "`r Sys.Date()`"
+date: "05-03-2026"
 output:
   xaringan::moon_reader:
     css: xaringan-themer.css
@@ -18,7 +18,6 @@ output:
 ```{r load-packages, include = FALSE}
 # Add any additional packages you need to this chunk
 library(tidyverse)
-library(tidymodels)
 library(palmerpenguins)
 library(knitr)
 library(xaringanthemer)
@@ -30,149 +29,237 @@ knitr::opts_chunk$set(fig.retina = 3, dpi = 300, fig.width = 6, fig.asp = 0.618,
 ```
 
 ```{r load-data, include=FALSE}
-# Load your data here
+GlobalTemperatures <- read_csv("../data/GlobalTemperatures.csv")
+GlobalLandTemperaturesByCountry <- read_csv("../data/GlobalLandTemperaturesByCountry.csv")
 ```
 
-```{r}
+```{r title-background, include=FALSE}
 style_xaringan(
-  title_slide_background_image = "img/confetti.jpg"
+  title_slide_background_color = "red"
 )
 ```
 
 
+
 class: center, middle
 
-## A statement of the overall goal / research question
+### Research Question  
+How have global and country-level temperatures changed over time, and are these trends statistically significant?
 
 ---
 
 class: inverse, center, middle
 
-# Section title
+# Data
 
 ---
 
-# Hello World
+# Data Overview
 
-- Click the `Knit` button to compile your presentation
+- Two datasets:
+  - **GlobalTemperatures**
+  - **GlobalLandTemperaturesByCountry**
 
-- Make sure to commit and push all resulting files to your GitHub repo
+- Observations include:
+  - Date (dt)
+  - Temperature values (°C)
+  - Country (for country-level data)
 
----
-
-class: inverse, middle, center
-
-# Using xaringan
-
----
-
-# xaringan
-
-- The presentation is created using the `xaringan` package
-
-- Use `---` to separate slides and `--` for incremental builds
-
---
-
-- Like this
+- Each row = one temperature observation at a specific time and location
 
 ---
 
-# Layouts
+# Key Variables
 
-You can use plain text
+- **AverageTemperature / LandAverageTemperature** → response (Y)  
 
-- or bullet points
+- **Year (derived from date)** → predictor (X)  
 
-.pull-left[
-or text in two columns $^*$
-]
-.pull-right[
-- like
-- this
-]
-
-.footnote[
-[*] And add footnotes
-]
+- **Country** → comparison groups  
 
 ---
 
-# Code
+class: inverse, center, middle
 
-```{r boring-regression}
-# a boring regression
-model <- lm(dist ~ speed, data = cars)
-tidy(model)
-glance(model)
+# Exploratory Analysis
+
+---
+
+# Global Temperature Trend
+
+```{r global-trend, echo=FALSE, message=FALSE, warning=FALSE, fig.width=7,fig.height=6}
+library(dplyr)
+library(ggplot2)
+
+GlobalTemperatures$Year <- as.numeric(format(as.Date(GlobalTemperatures$dt), "%Y"))
+
+avg_temp_year <- GlobalTemperatures %>%
+  group_by(Year) %>%
+  summarize(mean_temp = mean(LandAverageTemperature, na.rm = TRUE)) %>%
+  filter(Year >= 1850)
+
+ggplot(avg_temp_year, aes(x = Year, y = mean_temp)) +
+  geom_line() +
+  theme_minimal() +
+  labs(title = "Average Global Land Temperature Over Time",
+       x = "Year",
+       y = "Temperature (°C)")
 ```
 
 ---
 
-# Plots
+# Country Comparison
 
-```{r recode-species, echo = FALSE}
-# In this chunk I'm doing a bunch of analysis that I don't want to present 
-# in my slides. But I need the resulting data frame for a plot I want to present.
-iris_modified <- iris %>%
-  mutate(Species = fct_other(Species, keep = "setosa"))
-```
+```{r global-land, echo=FALSE, message=FALSE, warning=FALSE, fig.width=7,fig.height=6}
+GlobalLandTemperaturesByCountry$Year <- as.numeric(format(as.Date(GlobalLandTemperaturesByCountry$dt), "%Y"))
 
-```{r plot-iris, echo = FALSE}
-# Code hidden with echo = FALSE
-# Uses modified iris dataset from previous chunk
-# Play around with height and width until you're happy with the look
-ggplot(data = iris_modified, mapping = aes(x = Sepal.Width, y = Sepal.Length, color = Species)) +
-  geom_point() + 
-  theme_minimal() # theme options: https://ggplot2.tidyverse.org/reference/ggtheme.html
-```
+subset_data <- GlobalLandTemperaturesByCountry %>%
+  filter(Country %in% c("United States", "India", "China"))
 
----
+plot_data <- subset_data %>%
+  group_by(Year, Country) %>%
+  summarize(mean_temp = mean(AverageTemperature, na.rm = TRUE)) %>%
+  filter(Year >= 1850)
 
-## Plot and text
-
-.pull-left[
-- Some text
-- goes here
-]
-.pull-right[
-```{r warning=FALSE, out.width="100%", fig.width=4, echo=FALSE}
-# see how I changed out.width and fig.width from defaults
-# to make the figure bigger
-ggplot(penguins, aes(x = bill_length_mm, y = species, color = species)) +
-  geom_boxplot() +
-  theme_minimal()
-```
-]
-
----
-
-# Tables
-
-If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
-
-```{r iris-table, echo = FALSE}
-kable(head(iris), format = "html")
+ggplot(plot_data, aes(x = Year, y = mean_temp, color = Country)) +
+  geom_line() +
+  theme_minimal() +
+  labs(title = "Temperature Trends by Country",
+       x = "Year",
+       y = "Temperature (°C)")
 ```
 
 ---
 
-# Images
+# Key Takeaways
 
-```{r castle, echo = FALSE, out.width = "60%", fig.align = "center", fig.cap = "Image credit: Photo by Enjoy Illinois."}
-include_graphics("img/chicago-fall.jpeg")
-```
+- **Global Temperature Trends**
+
+  - Clear upward trend throughout time
+  
+  - Strong increase after the 20th century
+  
+- **Country Comparison**
+
+  - All countries show general increasing trends
+  
+  - Solidifies the "global warming" argument
 
 
 ---
 
-# Feeling adventurous?
+class: inverse, center, middle
 
-- Want to find out more about `xaringan`? See https://slides.yihui.name/xaringan/#1.
+# Statistical Analysis
 
-- You are welcomed to use the default styling of the slides. In fact, that's what I expect majority of you will do. You will differentiate yourself with the content of your presentation.
+---
 
-- But some of you might want to play around with slide styling. The 
-`xaringanthemer` provides some solutions for this that: https://pkg.garrickadenbuie.com/xaringanthemer.
+# Linear Regression (Global)
 
-- And if you want more bells and whistles, there is also `xaringanExtra`: https://pkg.garrickadenbuie.com/xaringanExtra.
+```{r global-lin-reg, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
+model_global <- lm(mean_temp ~ Year, data = avg_temp_year)
+summary(model_global)
+```
+
+---
+```{r global-lin-reg-cont, echo=FALSE, message=FALSE, warning=FALSE}
+model_global <- lm(mean_temp ~ Year, data = avg_temp_year)
+summary(model_global)
+```
+  - Tests if temp. increases through time
+  
+  - If the p-value is less than 0.05, this means it is a statistically significant trend
+
+---
+
+# 30 Year Climate Norms
+
+```{r climate-norm, echo=FALSE, message=FALSE, warning=FALSE}
+avg_temp_year <- avg_temp_year %>%
+  mutate(block_30yr = floor(Year / 30) * 30)
+
+climate_normals <- avg_temp_year %>%
+  group_by(block_30yr) %>%
+  summarize(mean_temp = mean(mean_temp, na.rm = TRUE))
+
+ggplot(climate_normals, aes(x = block_30yr, y = mean_temp)) +
+  geom_line() +
+  geom_point() +
+  theme_minimal() +
+  labs(title = "30-Year Climate Normals",
+       x = "Year (30-year blocks)",
+       y = "Temperature (°C)")
+```
+
+---
+
+# Bootstrapping
+
+```{r climate-bootstrap, echo=FALSE, message=FALSE, warning=FALSE}
+set.seed(123)
+
+boot_ci <- avg_temp_year %>%
+  group_by(block_30yr) %>%
+  summarize(
+    boot_means = list(replicate(300, {
+      samp <- sample(mean_temp, replace = TRUE)
+      mean(samp)
+    }))
+  ) %>%
+  rowwise() %>%
+  mutate(
+    lower = quantile(unlist(boot_means), 0.025),
+    upper = quantile(unlist(boot_means), 0.975),
+    mean = mean(unlist(boot_means))
+  )
+
+ggplot(boot_ci, aes(x = block_30yr, y = mean)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = lower, ymax = upper), width = 5) +
+  theme_minimal() +
+  labs(title = "30-Year Temperature with 95% CI",
+       x = "Year (30-year blocks)",
+       y = "Temperature (°C)")
+```
+
+---
+
+# Key Takeaways
+
+- **30 Year Climate Norms**
+
+  - Chart smooths out short-term fluctuation
+  
+  - Highlights long-term warming trends
+  
+
+- **Bootstrapping**
+
+  - Displays a variability in estimates
+  
+  - With non overlapping intervals, we attain significant differences
+
+---
+
+class: inverse, center, middle
+
+# Conclusion
+
+---
+
+#Key Findings
+
+- Global temperatures show a clear upward trend
+
+- Regression confirms trend is statistically significant
+
+- 30-year averages show consistent increase
+
+- Bootstrapped confidence intervals indicate significant differences between periods
+
+---
+
+class: center, middle
+
+# Thank You!

@@ -10,8 +10,8 @@ library(broom)
 ```
 
 ```{r}
-GlobalTemperatures <- read.csv(file.choose())
-GlobalLandTemperaturesByCountry <- read.csv(file.choose())
+GlobalTemperatures <- read_csv("../data/GlobalTemperatures.csv")
+GlobalLandTemperaturesByCountry <- read_csv("../data/GlobalLandTemperaturesByCountry.csv")
 ```
 
 ## 1. Data
