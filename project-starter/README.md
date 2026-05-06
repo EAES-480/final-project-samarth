@@ -1,6 +1,6 @@
-Project title
+Global Temperature Change
 ================
-by Team name
+By: Samarth Sulakhe
 
 ## Summary
 
@@ -24,16 +24,16 @@ your project.
 
 ## Presentation
 
-Our presentation can be found [here](presentation/presentation.html).
+The presentation can be found [View Presentation](presentation_file.html).
 
 ## Data
 
-Include a citation for your data here. See
-<http://libraryguides.vu.edu.au/c.php?g=386501&p=4347840> for guidance
-on proper citation for datasets. If you got your data off the web, make
-sure to note the retrieval date.
+Earth, Berkeley. Climate Change: Earth Surface Temperature Data 
+  https://www.kaggle.com/datasets/berkeleyearth/climate-change-earth-surface-temperature-data?resource=download 
+  (accessed Apr 15, 2026). 
 
 ## References
 
-List any references here. You should, at a minimum, list your data
-source.
+Earth, Berkeley. Climate Change: Earth Surface Temperature Data 
+  https://www.kaggle.com/datasets/berkeleyearth/climate-change-earth-surface-temperature-data?resource=download 
+  (accessed Apr 15, 2026). 

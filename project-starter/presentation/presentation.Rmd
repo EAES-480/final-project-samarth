@@ -56,6 +56,8 @@ class: inverse, center, middle
 
 # Data Overview
 
+Courtesy of Berkeley Earth, data attained from Kaggle.
+
 - Two datasets:
   - **GlobalTemperatures**
   - **GlobalLandTemperaturesByCountry**
@@ -259,7 +261,12 @@ class: inverse, center, middle
 - Bootstrapped confidence intervals indicate significant differences between periods
 
 ---
+#Sources Cited
 
+Earth, B. Climate Change: Earth Surface Temperature Data https://www.kaggle.com/datasets/berkeleyearth/climate-change-earth-surface-temperature-data?resource=download
+
+---
 class: center, middle
+background-color: red
 
 # Thank You!
